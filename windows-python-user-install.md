@@ -52,17 +52,39 @@ uv run python -c "import httpx; print(httpx.__version__)"
 uv run python main.py
 ```
 
-## 4. 若公司擋了從網路執行腳本
+## 4. 目前這條：公司擋了 irm / 網路腳本，改瀏覽器下載
 
-改走官網安裝程式，只裝給目前使用者：
+`irm`、`Invoke-RestMethod`、`irm | iex` 這類從網路抓腳本再執行，實測受限。不要再試安裝腳本，也不要改用系統管理員。
+
+### Python 3.13
 
 1. 瀏覽器打開 https://www.python.org/downloads/release/python-31316/
 2. 下載 Windows installer (64-bit)
 3. 安裝時勾選 Add python.exe to PATH
 4. 選 Customize，確認路徑在 `%LOCALAPPDATA%\Programs\Python`
-5. 不要勾選 for all users，不要勾選安裝到 C:\Program Files
+5. 不要勾選 for all users，不要勾選安裝到 `C:\Program Files`
 
 裝完到「設定 → 應用程式 → 進階應用程式設定 → 應用程式執行別名」，把 App Installer 的 python.exe 與 python3.exe 關掉。否則打 python 會開到 Microsoft Store。
+
+新開 PowerShell 後：
+
+```powershell
+python -c "import sys; print(sys.executable); print(sys.version)"
+```
+
+應含 `3.13`，路徑在使用者目錄。
+
+### uv（選擇性）
+
+瀏覽器打開 https://github.com/astral-sh/uv/releases ，下載 `uv-x86_64-pc-windows-msvc.zip`（ARM64 筆電改 `uv-aarch64-pc-windows-msvc.zip`）。解壓出 `uv.exe`，放到：
+
+```text
+%USERPROFILE%\.local\bin
+```
+
+用「編輯帳戶的環境變數」把這個目錄加到使用者 Path 最前。不要用 `setx PATH "%PATH%;..."`。新開視窗後 `uv --version`。之後仍是一個目錄一個環境：`uv init`、`uv add`。
+
+uv 若也被擋，先只用上面的官網 Python。本機試跑不因此改去裝 JDK。
 
 ## 5. 先不要做的事
 
